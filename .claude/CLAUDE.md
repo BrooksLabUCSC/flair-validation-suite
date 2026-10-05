@@ -13,6 +13,11 @@ them.  metadata/ exists but its contents are not defined.
 - Brooks lab data lives under /private/groups/brookslab and is not publicly releasable.
 - Symlink it into a gitignored directory.  Never copy it into the repo.
 - Each dataset declares whether has.  The public subset runs without it.
+- Never run a recursive search (find, grep -r, ls -R, rg) in this tree or in
+  /private/groups/brookslab without asking first.  data/ is symlinks into brookslab, so a
+  walk of this tree is a walk of a shared networked file system, slow for everyone on it.
+- Test or list specific known paths instead.  A path that is wrong or missing is something
+  to report, not to go hunting for.
 
 ## Selecting a FLAIR version
 - undecided
