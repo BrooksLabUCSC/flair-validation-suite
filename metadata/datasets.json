@@ -1,0 +1,159 @@
+{
+    "datasets": [
+        {
+            "name": "wtc11-chr22-pb",
+            "description": "WTC11 PacBio cDNA from LRGASP, alignments and reference subset to chr22.  Produced in Brooks lab space by cafelton from public ENCODE data, so it is re-derivable publicly.  The short-read junctions are whole genome, not subset to chr22.",
+            "access": "public",
+            "organism": "human",
+            "assembly": "GRCh38",
+            "annotation": "gencode-v38",
+            "platform": "pacbio",
+            "library": "cdna",
+            "regions": ["chr22"],
+            "validations": ["transcriptome", "splice-junctions", "regression"],
+            "source": "ENCFF370NFS",
+            "files": {
+                "alignments": "data/wtc11-chr22/WTC11.ENCFF370NFS.chr22.genomealigned.bam",
+                "alignments-bed": "data/wtc11-chr22/WTC11.ENCFF370NFS.chr22.genomealigned.bed",
+                "genome-fasta": "data/wtc11-chr22/GRCh38.chr22.genome.fa",
+                "annotation-gtf": "data/wtc11-chr22/gencode.v38.annotation.chr22.gtf",
+                "short-read-junctions": "data/wtc11-chr22/WTC11_all.SJ.out.tab"
+            }
+        },
+        {
+            "name": "wtc11-chr22-ont",
+            "description": "WTC11 ONT cDNA from LRGASP, alignments subset to chr22.  Shares the chr22 reference and short-read junctions with wtc11-chr22-pb.",
+            "access": "public",
+            "organism": "human",
+            "assembly": "GRCh38",
+            "annotation": "gencode-v38",
+            "platform": "ont",
+            "library": "cdna",
+            "regions": ["chr22"],
+            "validations": ["transcriptome", "splice-junctions", "regression"],
+            "source": "ENCFF023EXJ",
+            "files": {
+                "alignments": "data/wtc11-chr22/WTC11.ENCFF023EXJ.chr22.genomealigned.bam",
+                "genome-fasta": "data/wtc11-chr22/GRCh38.chr22.genome.fa",
+                "annotation-gtf": "data/wtc11-chr22/gencode.v38.annotation.chr22.gtf",
+                "short-read-junctions": "data/wtc11-chr22/WTC11_all.SJ.out.tab"
+            }
+        },
+        {
+            "name": "wtc11-lrgasp-ont",
+            "description": "Full size WTC11 ONT cDNA from LRGASP, three replicates, about 49 GB of reads.  Reference is the LRGASP GRCh38 plus SIRV spike-in bundle.  The whole transcriptome case, slow enough to be the timing benchmark.",
+            "access": "public",
+            "organism": "human",
+            "assembly": "GRCh38",
+            "annotation": "gencode-v38",
+            "platform": "ont",
+            "library": "cdna",
+            "validations": ["transcriptome", "splice-junctions", "performance", "regression"],
+            "source": "ENCSR539ZXJ",
+            "files": {
+                "reads": [
+                    "data/wtc11-lrgasp/ENCFF023EXJ.fastq.gz",
+                    "data/wtc11-lrgasp/ENCFF263YFG.fastq.gz",
+                    "data/wtc11-lrgasp/ENCFF961HLO.fastq.gz"
+                ],
+                "genome-fasta": "data/wtc11-lrgasp/lrgasp_grch38_sirvs.fasta.gz",
+                "annotation-gtf": "data/wtc11-lrgasp/lrgasp_gencode_v38_sirvs.gtf",
+                "short-read-junctions": "data/wtc11-lrgasp/WTC11_all.SJ.out.tab"
+            }
+        },
+        {
+            "name": "smarca4-pb",
+            "description": "SMARCA4 knockdown and control, eight samples, PacBio Kinnex Revio.  Brooks lab, unpublished.  Restricted to the SMARCA4 locus chr19:10900001-11100000 in previous runs.",
+            "access": "restricted",
+            "organism": "human",
+            "assembly": "GRCh38",
+            "annotation": "gencode-v48",
+            "platform": "pacbio",
+            "library": "cdna",
+            "regions": ["chr19:10900001-11100000"],
+            "validations": ["transcriptome", "quantification"],
+            "files": {
+                "alignments": [
+                    "data/smarca4-pb/B1A_kd_induced_rep1_SMARA4_locus_aligned.bam",
+                    "data/smarca4-pb/B1A_kd_induced_rep2_SMARA4_locus_aligned.bam",
+                    "data/smarca4-pb/B1A_kd_unperturbed_SMARA4_locus_aligned.bam",
+                    "data/smarca4-pb/B1B_kd_induced_rep1_SMARA4_locus_aligned.bam",
+                    "data/smarca4-pb/B1B_kd_induced_rep2_SMARA4_locus_aligned.bam",
+                    "data/smarca4-pb/B1B_kd_unperturbed_SMARA4_locus_aligned.bam",
+                    "data/smarca4-pb/Scrambled_induced_nonspecific_SMARA4_locus_aligned.bam",
+                    "data/smarca4-pb/Scrambled_unperturbed_SMARA4_locus_aligned.bam"
+                ],
+                "genome-fasta": "data/grch38/GRCh38.primary_assembly.genome.fa",
+                "annotation-gtf": "data/grch38/gencode.v48.annotation.gtf"
+            }
+        },
+        {
+            "name": "a549-chr1",
+            "description": "A549 long reads restricted to a 300 kb window on chr1, with a matching chr1 reference.  Brooks lab.",
+            "access": "restricted",
+            "organism": "human",
+            "assembly": "GRCh38",
+            "annotation": "gencode-v48",
+            "platform": "pacbio",
+            "library": "cdna",
+            "regions": ["chr1"],
+            "validations": ["transcriptome", "splice-junctions"],
+            "files": {
+                "reads": "data/a549-chr1/A549_chr1_reads_300kb.fasta",
+                "genome-fasta": "data/a549-chr1/A549_chr1_reference.fasta",
+                "annotation-gtf": "data/grch38/gencode.v48.annotation.gtf"
+            }
+        },
+        {
+            "name": "a549-chr5",
+            "description": "A549 long reads restricted to a 300 kb window on chr5, with a matching chr5 reference.  Brooks lab.",
+            "access": "restricted",
+            "organism": "human",
+            "assembly": "GRCh38",
+            "annotation": "gencode-v48",
+            "platform": "pacbio",
+            "library": "cdna",
+            "regions": ["chr5"],
+            "validations": ["transcriptome", "splice-junctions"],
+            "files": {
+                "reads": "data/a549-chr5/A549_chr5_reads_300kb.fasta",
+                "genome-fasta": "data/a549-chr5/A549_chr5_reference.fasta",
+                "annotation-gtf": "data/grch38/gencode.v48.annotation.gtf"
+            }
+        },
+        {
+            "name": "a549-drna",
+            "description": "A549 ONT direct RNA, aligned to hg38.  The only direct RNA data set, so the only one exercising the non-cDNA code paths.  Brooks lab.",
+            "access": "restricted",
+            "organism": "human",
+            "assembly": "GRCh38",
+            "annotation": "gencode-v48",
+            "platform": "ont",
+            "library": "drna",
+            "validations": ["transcriptome", "splice-junctions", "transcript-ends"],
+            "files": {
+                "alignments": "data/a549-drna/A549.directRNA.r1.0425.hg38aligned.bam",
+                "genome-fasta": "data/grch38/GRCh38.primary_assembly.genome.fa",
+                "annotation-gtf": "data/grch38/gencode.v48.annotation.gtf",
+                "cage-peaks": "data/a549-drna/A549_CAGE.bed",
+                "polya-peaks": "data/a549-drna/WTC11_all_polyApeaks_fixed.bed"
+            }
+        },
+        {
+            "name": "yeast-ont",
+            "description": "One thousand yeast ONT reads against sacCer3.  Small and fast, used as a smoke test on a compact genome.  Provenance of the read file is not recorded anywhere and needs confirming before this is called public.",
+            "access": "restricted",
+            "organism": "yeast",
+            "assembly": "sacCer3",
+            "annotation": "ares-v11",
+            "platform": "ont",
+            "validations": ["transcriptome", "splice-junctions"],
+            "files": {
+                "reads": "data/yeast-ont/yeast_1000.fq",
+                "genome-fasta": "data/yeast-ont/sacCer3.fa",
+                "annotation-gtf": "data/yeast-ont/sacCer3_ares_v11.cleaned_with_transcripts.gtf",
+                "short-read-junctions": "data/yeast-ont/yeast_sjs.tab"
+            }
+        }
+    ]
+}

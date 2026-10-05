@@ -19,3 +19,6 @@ test/output/
 /notes/
 # directory for random work, not checked in
 /work/
+
+# data files, symlinked in, never checked in
+/data/
