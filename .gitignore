@@ -12,7 +12,10 @@ test/output/
 *.gz
 /dist/
 .claude.bak/
-.claude/
+.claude/*
+!.claude/CLAUDE.md
 
 # directory for taking random notes while working, never checked in
 /notes/
+# directory for random work, not checked in
+/work/
