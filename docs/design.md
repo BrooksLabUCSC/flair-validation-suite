@@ -20,7 +20,11 @@ Draft.  Nothing here is built yet.  Open questions are at the end.
 - **experiment**: a named question.  It declares the stages the question needs and
   the comparisons that answer it.  It owns no directories of its own beyond its
   report.
-- **dataset**: a named set of input files, from `metadata/datasets.json`.
+- **dataset**: one named part of the input, from `metadata/datasets.json`: a
+  reference, a sample, or an evidence set.  The catalog holds the parts and never a
+  combination of them.
+- **inputs**: the reference, samples and evidence one run is given, named by symbol
+  where the run is declared.
 - **version**: a named FLAIR build.
 - **metric**: one named number produced from a stage's output.
 - **comparison**: the same metric from two stages, side by side.
@@ -33,12 +37,13 @@ Three axes, chosen independently.
   version, or a working tree being developed.
 - **Steps and their parameters**: which FLAIR modules run, in what order, with what
   options.  One branch point per parameter being tested.
-- **Dataset**: which reads or alignments, which genome and annotation, and which
-  orthogonal evidence (short-read junctions, CAGE peaks, poly(A) peaks).
+- **Inputs**: which reference, which samples, and which orthogonal evidence.  The
+  three vary independently, which is why the catalog keeps them apart: the same
+  sample against GENCODE v38 and v48 is two runs differing in one named part.
 
-Parameters sometimes have to differ between datasets to mean the same thing.  That
-is a decision in the step function, not a table entry.  A step function that needs
-evidence a dataset does not have raises an error naming the dataset and the role.
+Parameters sometimes have to differ between inputs to mean the same thing.  That is a
+decision in the step function, not a table entry.  A step function that needs
+evidence the inputs do not carry raises an error naming what is missing.
 
 ## The run tree
 
@@ -61,14 +66,17 @@ results/runs/wtc11-chr22-pb/flair-2.0.0/transcriptome-no-sr-junctions/sqanti/
 - Stages are declared by calling Python functions that build a branch:
 
 ```python
-def transcriptome_default(tree, dataset, version):
-    base = tree.root(dataset, version)
-    return tree.transcriptome(base, "transcriptome-default")
+def transcriptome_default(tree, inputs, version):
+    return tree.transcriptome(tree.root(inputs, version), "transcriptome-default")
 
-def transcriptome_no_sr_junctions(tree, dataset, version):
-    base = tree.root(dataset, version)
-    return tree.transcriptome(base, "transcriptome-no-sr-junctions", junction_tab=None)
+def transcriptome_no_sr_junctions(tree, inputs, version):
+    return tree.transcriptome(tree.root(inputs, version), "transcriptome-no-sr-junctions",
+                              junctions=None)
 ```
+
+- `tree.root()` takes the inputs by symbolic name, resolves them against the catalog
+  and errors when they disagree, such as evidence on a different reference from the
+  sample's.  The combination is written in the experiment, not in the catalog.
 
 - Two experiments that both call `transcriptome_default` name the same path, so they
   get the same stage and it runs once.  Reuse across experiments is reuse of these
@@ -82,16 +90,21 @@ def transcriptome_no_sr_junctions(tree, dataset, version):
   it needs, then the comparisons that answer the question.
 
 ```python
+WTC11_CHR22 = Inputs(label="wtc11-chr22-pb",
+                     reference="grch38-chr22-gencode-v38",
+                     samples=["wtc11-chr22-pb"],
+                     evidence=["wtc11-chr22-junctions"])
+
 def short_read_junctions(exp):
     "Do short-read junctions change transcriptome accuracy?"
-    for dataset in exp.datasets_with(FileRole.short_read_junctions):
-        with_sj = transcriptome_default(exp.tree, dataset, exp.version)
-        without = transcriptome_no_sr_junctions(exp.tree, dataset, exp.version)
-        exp.compare(with_sj.sqanti, without.sqanti, over=dataset.name)
+    for inputs in (WTC11_CHR22, WTC11_CHR22_ONT):
+        with_sj = transcriptome_default(exp.tree, inputs, exp.version)
+        without = transcriptome_no_sr_junctions(exp.tree, inputs, exp.version)
+        exp.compare(with_sj.sqanti, without.sqanti, over=inputs.label)
 ```
 
-- The experiment names what varies and what is held fixed.  Here the dataset and
-  version are held fixed within each comparison and the junction input varies.
+- The experiment names what varies and what is held fixed.  Here the inputs and the
+  version are held fixed within each comparison and the junction evidence varies.
 - Output is `results/experiments/<name>/`, holding `comparisons.tsv` and a report.
   No FLAIR output lives there; it points into `results/runs/`.
 - Deleting an experiment does not delete any run.  Adding one usually adds no runs,
@@ -115,9 +128,9 @@ new label or to remove the directory.
 
 ## Steps, in the order they are needed
 
-- `align`: inserted only when a dataset has reads and no alignments.
+- `align`: inserted only when a sample has reads and no alignments.
 - `transcriptome`: the first target.
-- `sqanti`: SQANTI3 against the dataset's annotation; `*_classification.txt` and
+- `sqanti`: SQANTI3 against the reference annotation; `*_classification.txt` and
   `*_junctions.txt` are the inputs to the metrics.
 - `read-recovery`: how much of the read evidence the transcriptome represents.
   Carried over from `wtc11-chr22-eval/bin/evaluate_transcriptome_0226.py`, keeping
@@ -191,7 +204,10 @@ new label or to remove the directory.
 ```
 bin/                       driver programs, no extension
 lib/flair_validate/
-  datasets.py              dataset catalog, exists
+  jsonparse.py             checked access to JSON fields, exists
+  datafiles.py             one class per kind of input file, exists
+  datasets.py              one class per kind of catalog entry, exists
+  inputs.py                named combinations of reference, samples and evidence
   versions.py              resolve a git ref to a commit and an install
   steps.py                 one function per step, builds the command line
   tree.py                  Stage, run tree, labels, paths, identity checking
@@ -222,5 +238,5 @@ build/                     FLAIR installs, gitignored
   junction chain string is a substring of a reference chain string.  That matches
   across chain boundaries and will call some isoforms ISM that are not.  Reimplement
   on junction tuples rather than carrying the bug forward.
-- `read-recovery` needs reads as BED12 and only one dataset has that role.  Either
-  derive it from the BAM in the step, or add the role to the datasets that need it.
+- `read-recovery` needs reads as BED12 and only `wtc11-chr22-pb` has that file.
+  Either derive it from the BAM in the step, or add it to the samples that need it.
